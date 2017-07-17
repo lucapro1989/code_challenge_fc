@@ -1,0 +1,20 @@
+{
+  "name": "justdress2017",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustDress/JustDress2017.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JustDress/JustDress2017/issues"
+  },
+  "homepage": "https://github.com/JustDress/JustDress2017#readme"
+}
