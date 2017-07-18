@@ -18,7 +18,7 @@ angular.module('AppControllers', [])
 
             console.log('ci sono! frontend');
             //var id = '597Caec1c3be952de0b0e8ed' //fakeID
-            var id = '596cc81b4ebf3524c0466109'
+            var id = '596d4cff720eb00340ed5081'
             /*  RestClient.given_key_cached_data(id, function(response) {
 
                   console.log(response.data);
@@ -35,16 +35,15 @@ angular.module('AppControllers', [])
                   time_to_live: 50
               }*/
 
-            /*  var toupdatecreate = {
-                  string: 'string_created',
-                  time_to_live: 70
-              }
-              var obj = {
+              /*var obj = {
                   id: id,
-                  to_update_create: toupdatecreate
-              }*/
+                  string: 'string_created',
+                  time_to_live: 70,
+                  created: new Date(),
+                  active: true
+              }
 
-            /*  RestClient.update_create(obj, function(response) {
+             RestClient.update_create(obj, function(response) {
 
                   console.log(response.data);
 

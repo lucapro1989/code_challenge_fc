@@ -1,6 +1,6 @@
 var mongoose = require('../config/mongodb');
 var controller_common = require('./common');
-var model_cache = require('../model/cache');
+var cached_data = require('../model/cache');
 
 var controller = {
     _name: "cached_data",
@@ -61,43 +61,45 @@ var controller = {
             return;
         })
     },
-    update_create: function(req, res) {
+    update_create: function(req, res) { //NOT COMPLETE
 
-        model_cache.findOne({
+       cached_data.findOne({
             _id: req.body.id
-        }).exec(function(err, data_to_update) {
+        }).exec(function(err, cached_data) {
+          if(!cached_data){
+
+          var cache = new model_cache({
+              string: req.body.to_update_create.string,
+              time_to_live: req.body.to_update_create.time_to_live,
+              created: new Date(),
+              active: true
+          });
+          cache.save(function() {
+              console.log('saved new!')
+              res.json({
+                  result: 0
+              });
+
+          })
 
 
-            if (data_to_update) {
-
-                data_to_update.string = req.body.to_update_create.string;
-
-                data_to_update.time_to_live = req.body.to_update_create.time_to_live;
-
-                data_to_update.save(function(err) {
-                    console.log('saved!')
-                    res.json({
-                        result: 0
-                    });
-                    return
-                })
             } else {
-                var cache = new model_cache({
-                    string: req.body.to_update_create.string,
-                    time_to_live: req.body.to_update_create.time_to_live,
-                    created: new Date(),
-                    active: true
-                });
-                cache.save(function() {
-                    console.log('saved new!')
-                    res.json({
-                        result: 0
-                    });
 
-                })
+              cached_data.string = req.body.string;
+              cached_data.time_to_live = req.body.time_to_live;
+              cached_data.created = req.body.created;
+              cached_data.active = true;
 
 
-            }
+              cached_data.save(function(err) { //not saving
+                  console.log('saved!')
+                  res.json({
+                      result: 0
+                  });
+                  return
+              })
+
+          }
 
         })
     },
@@ -120,38 +122,25 @@ var controller = {
         });
 
     },
-    check_cache_length: function(req, res) {
+    check_cache_length: function(req, res) { //NOT COMPLETE
 
-        model_cache.count().exec(function(err, count) {
+        cached_data.count().exec(function(err, count) {
 
-            if (count > 2) { //if all cached items length is more than what we want (i put 2 for better use!)
-                model_cache.findOneAndUpdate(req.body, { //find oldest and update it with new data
-                        upsert: true
-                    })
-                    .sort({
-                        created: 1
-                    }).exec(function(err, doc) {
-
-                        res.json('saved');
-                        return;
-
-                        /*console.log(oldest_data);
-                        oldest_data = new model_cache({
-                            string: req.body.string,
-                            time_to_live: req.body.time_to_live,
-                            created: new Date(),
-                            active: req.body.active
-                        })*/
-
-
-                        /*  oldest_data.save(function() {
-                              console.log('FATTO!')
-                              res.json('done!');
-                              return;
-
-                          })*/
-
-
+            if (count > 4) {
+               //if all cached items length is more than what we want (i put 2 for better use!)
+              /* cached_data.findOneAndUpdate()
+                   .sort({
+                       created: 1
+                   }).exec(function(err, data_updated) {*/ //not saving first way
+                   cached_data.find()
+                        .sort({
+                            created: 1
+                        }).exec(function(err, sorted_data) {
+                          check_single_cached_item({ //not saving second way
+                            elements: sorted_data,
+                            i: 0,
+                            new_element: req.body
+                          })
 
                     })
             } else {
@@ -180,16 +169,13 @@ var controller = {
 };
 
 function check_single_cached_item(step_data) {
-    /*if (step_data.i == step_data.elements.length) { //if last element log DONE
 
-        console.log("DONE CHECKING");
-        return;
-    }*/
     var item_to_overwrite = step_data.elements[0]; //first element will be the oldest
-    if (item_to_overwrite) {
+    //console.log(item_to_overwrite._id + ' ' + step_data.new_element)
+    if (step_data.i == 0) {
         var newest_cached_item = step_data.new_element;
-        item_to_overwrite = newest_cached_item; ////overwriting newest to oldest
-        item_to_overwrite.save(function() {
+        item_to_overwrite = step_data.new_element; ////overwriting newest to oldest
+        item_to_overwrite.save(function() {//not_saving
             //save
             console.log('saved new!')
             step_data.i++;

@@ -1,20 +1,28 @@
 {
-  "name": "justdress2017",
+  "name": "fashion_cloud",
   "version": "1.0.0",
   "description": "",
-  "main": "index.html",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.11.3",
+    "angularjs": "^0.0.1",
+    "angular-route": "^1.6.5"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JustDress/JustDress2017.git"
+    "url": "git+https://github.com/lucapro1989/code_challenge_fc.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JustDress/JustDress2017/issues"
+    "url": "https://github.com/lucapro1989/code_challenge_fc/issues"
   },
-  "homepage": "https://github.com/JustDress/JustDress2017#readme"
+  "homepage": "https://github.com/lucapro1989/code_challenge_fc#readme"
 }
