@@ -25,8 +25,10 @@ var controller = {
                 }
 
                 var cache = new model_cache({
-                    string: result,
-                    time_to_live: 50
+                  string: result,
+                  time_to_live: 40,
+                  created: new Date(),
+                  active: true
                 });
                 cache.save(function(err) {
                     console.log('saved!')
@@ -82,7 +84,9 @@ var controller = {
             } else {
                 var cache = new model_cache({
                     string: req.body.to_update_create.string,
-                    time_to_live: req.body.to_update_create.time_to_live
+                    time_to_live: req.body.to_update_create.time_to_live,
+                    created: new Date(),
+                    active: true
                 });
                 cache.save(function() {
                     console.log('saved new!')
@@ -121,7 +125,7 @@ var controller = {
         model_cache.count().exec(function(err, count) {
 
             if (count > 2) { //if all cached items length is more than what we want (i put 2 for better use!)
-                model_cache.findOneAndUpdate(req.body, {
+                model_cache.findOneAndUpdate(req.body, { //find oldest and update it with new data
                         upsert: true
                     })
                     .sort({
@@ -213,8 +217,7 @@ function check_single_ttl(step_data) {
     var ttl = cached_item.time_to_live;
     var diffMs = (now - date_created); //difference time in ms
     var diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); //ms in minutes
-    //var message;
-    if (diffMins > ttl && cached_item.active) { //if ttl expired and active
+    if (diffMins > ttl && cached_item.active) { //if ttl expired and active supposing ttl in minutes
         cached_item.active = false; //change to false, not active anymore
 
         cached_item.save(function() {
@@ -227,7 +230,7 @@ function check_single_ttl(step_data) {
             });
             cache.save(function(err) { //save
                 console.log('saved new!')
-                step_data.i++;
+                step_data.i++; //go to next element
                 check_single_ttl(step_data);
 
             })

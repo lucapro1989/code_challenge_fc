@@ -3,9 +3,9 @@ var model_cache = require('../model/cache');
 
 
 var cache = {
-    string: 'prova',
+    string: 'string3',
     time_to_live: 50,
-    created: new Date(),
+    created: new Date(2017,05,04),
     active: true
 }
 
